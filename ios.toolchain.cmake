@@ -90,6 +90,7 @@
 #    OS64 = arm64 (if applicable)
 #    SIMULATOR = i386
 #    SIMULATOR64 = x86_64
+#    SIMULATORS = i386 x86_64
 #    TVOS = arm64
 #    SIMULATOR_TVOS = x86_64 (i386 has since long been deprecated)
 #    WATCHOS = armv7k arm64_32 (if applicable)
@@ -227,6 +228,9 @@ if(PLATFORM_INT STREQUAL "OS" AND DEPLOYMENT_TARGET VERSION_GREATER_EQUAL 10.3.4
 elseif(PLATFORM_INT STREQUAL "SIMULATOR" AND DEPLOYMENT_TARGET VERSION_GREATER_EQUAL 10.3.4)
   set(PLATFORM_INT "SIMULATOR64")
   message(STATUS "Targeting minimum SDK version ${DEPLOYMENT_TARGET}. Dropping 32-bit support.")
+elseif(PLATFORM_INT STREQUAL "SIMULATORS" AND DEPLOYMENT_TARGET VERSION_GREATER_EQUAL 10.3.4)
+  set(PLATFORM_INT "SIMULATOR64")
+  message(STATUS "Targeting minimum SDK version ${DEPLOYMENT_TARGET}. Dropping 32-bit support.")
 endif()
 
 # Determine the platform name and architectures for use in xcodebuild commands
@@ -273,6 +277,11 @@ elseif(PLATFORM_INT STREQUAL "SIMULATOR64")
   if(NOT ARCHS)
     set(ARCHS x86_64)
     set(APPLE_TARGET_TRIPLE_INT x86_64-apple-ios)
+  endif()
+elseif(PLATFORM_INT STREQUAL "SIMULATORS")
+  set(SDK_NAME iphonesimulator)
+  if(NOT ARCHS)
+    set(ARCHS i386 x86_64)
   endif()
 elseif(PLATFORM_INT STREQUAL "TVOS")
   set(SDK_NAME appletvos)
